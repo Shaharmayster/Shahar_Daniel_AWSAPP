@@ -3,25 +3,25 @@ import os
 DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///local.db")
 
 GREETING_TYPES = [
-    "Shabbat Shalom",
-    "Happy Birthday",
-    "Holiday Greeting",
-    "Missing You",
-    "Congratulations",
+    "שבת שלום",
+    "מזל טוב",
+    "חג שמח",
+    "מתגעגעת אליכם",
+    "ברכות",
 ]
 
 RECIPIENTS = [
-    "Grandchildren",
-    "Grandson",
-    "Granddaughter",
-    "Family",
-    "Son",
-    "Daughter",
+    "נכדים",
+    "נכד",
+    "נכדה",
+    "משפחה",
+    "בן",
+    "בת",
 ]
 
 GRANDMA_STYLES = [
-    "Polish Grandma",
-    "Moroccan Grandma",
-    "Iraqi Grandma",
-    "Russian Grandma",
+    "סבתא פולניה",
+    "סבתא מרוקאית",
+    "סבתא עיראקית",
+    "סבתא רוסיה",
 ]

@@ -1,146 +1,144 @@
 from config import GRANDMA_STYLES, GREETING_TYPES, RECIPIENTS
 
 TEMPLATES = {
-    ("Shabbat Shalom", "Polish Grandma"): (
-        "Shabbat Shalom {recipient} ❤️\n\n"
-        "Did you eat today? You look too skinny in the last picture. "
-        "I made too much cholent — come eat before it gets cold."
+    ("שבת שלום", "סבתא פולניה"): (
+        "שבת שלום {recipient} ❤️\n\n"
+        "אכלתם היום משהו? אתם נראים רזים מדי בתמונה האחרונה. "
+        "הכנתי צ'ולנט לשבת — תבואו לאכול לפני שהוא מתקרר."
     ),
-    ("Shabbat Shalom", "Moroccan Grandma"): (
-        "Shabbat Shalom {recipient} 🌙\n\n"
-        "The house smells like cumin and love. I set your place at the table — "
-        "don't make me call you three times to come eat."
+    ("שבת שלום", "סבתא מרוקאית"): (
+        "שבת שלום {recipient} 🌙\n\n"
+        "הבית מלא בריח של כמון ואהבה. הכנתי לכם מקום ליד השולחן — "
+        "אל תחכו שאקרא לכם שלוש פעמים לבוא לאכול."
     ),
-    ("Shabbat Shalom", "Iraqi Grandma"): (
-        "Shabbat Shalom {recipient} ✨\n\n"
-        "May this Shabbat bring peace to your heart. I lit the candles and "
-        "prayed for you by name. Eat well and rest — family is everything."
+    ("שבת שלום", "סבתא עיראקית"): (
+        "שבת שלום {recipient} ✨\n\n"
+        "שהשבת הזו תביא שלווה ללב שלכם. הדלקתי נרות והתפללתי בשבילכם בשם. "
+        "תאכלו טוב ותנוחו — משפחה זה הכול."
     ),
-    ("Shabbat Shalom", "Russian Grandma"): (
-        "Shabbat Shalom {recipient}.\n\n"
-        "Sit down. Eat. Rest. You work too hard. "
-        "On Shabbat we stop — even the world can wait one day."
+    ("שבת שלום", "סבתא רוסיה"): (
+        "שבת שלום {recipient}.\n\n"
+        "שבו. אכלו. תנוחו. אתם עובדים יותר מדי. "
+        "בשבת עוצרים — גם העולם יכול לחכות יום אחד."
     ),
-    ("Happy Birthday", "Polish Grandma"): (
-        "Happy Birthday {recipient}! 🎂\n\n"
-        "Another year older and still not eating enough. "
-        "I baked your favorite cake — three layers, just like you deserve."
+    ("מזל טוב", "סבתא פולניה"): (
+        "מזל טוב {recipient}! 🎂\n\n"
+        "עוד שנה עברה ועדיין לא אוכלים מספיק. "
+        "אפתי לכם עוגה בשלוש שכבות — בדיוק כמו שמגיע לכם."
     ),
-    ("Happy Birthday", "Moroccan Grandma"): (
-        "Happy Birthday {recipient}! 🎉\n\n"
-        "Today we celebrate YOU with music, sweets, and enough couscous "
-        "to feed the whole neighborhood. Mazal tov, my treasure!"
+    ("מזל טוב", "סבתא מרוקאית"): (
+        "מזל טוב {recipient}! 🎉\n\n"
+        "היום חוגגים אתכם עם מוזיקה, ממתקים וקוסקוס "
+        "בכמות שמספיקה לכל השכונה. מזל טוב, יקירי!"
     ),
-    ("Happy Birthday", "Iraqi Grandma"): (
-        "Happy Birthday {recipient}! 🎂\n\n"
-        "May God bless your new year with health, joy, and a home full of laughter. "
-        "I made baklava — your favorite — don't share it with anyone."
+    ("מזל טוב", "סבתא עיראקית"): (
+        "מזל טוב {recipient}! 🎂\n\n"
+        "שהשנה החדשה שלכם תביא בריאות, שמחה ובית מלא צחוק. "
+        "הכנתי בקלאווה — האהובה עליכם — אל תחלקו עם אף אחד."
     ),
-    ("Happy Birthday", "Russian Grandma"): (
-        "Happy Birthday {recipient}.\n\n"
-        "Strong year ahead of you. I made borscht and a cake big enough "
-        "for the whole family. Come celebrate — no excuses."
+    ("מזל טוב", "סבתא רוסיה"): (
+        "מזל טוב {recipient}.\n\n"
+        "שנה חזקה לפניכם. הכנתי בורשט ועוגה גדולה "
+        "לכל המשפחה. בואו לחגוג — בלי תירוצים."
     ),
-    ("Holiday Greeting", "Polish Grandma"): (
-        "Happy Holiday {recipient}! 🕯️\n\n"
-        "The table is set, the house is warm, and there's enough food "
-        "for an army. Bring your appetite — I already started worrying you won't come."
+    ("חג שמח", "סבתא פולניה"): (
+        "חג שמח {recipient}! 🕯️\n\n"
+        "השולחן מוכן, הבית חם, ויש אוכל בשפע "
+        "לכל הצבא. תביאו תיאבון — כבר התחלתי לדאוג שלא תבואו."
     ),
-    ("Holiday Greeting", "Moroccan Grandma"): (
-        "Happy Holiday {recipient}! ✨\n\n"
-        "The house is full of light, spices, and music. "
-        "Holidays are for family — come dance, eat, and stay until morning."
+    ("חג שמח", "סבתא מרוקאית"): (
+        "חג שמח {recipient}! ✨\n\n"
+        "הבית מלא אור, תבלינים ומוזיקה. "
+        "חגים זה למשפחה — בואו לרקוד, לאכול ולהישאר עד הבוקר."
     ),
-    ("Holiday Greeting", "Iraqi Grandma"): (
-        "Happy Holiday {recipient}! 🕯️\n\n"
-        "May this season bring blessings to your home. "
-        "I prepared all the traditional dishes — your seat is waiting."
+    ("חג שמח", "סבתא עיראקית"): (
+        "חג שמח {recipient}! 🕯️\n\n"
+        "שהחג הזה יביא ברכה לבית שלכם. "
+        "הכנתי את כל המנות המסורתיות — המקום שלכם מחכה."
     ),
-    ("Holiday Greeting", "Russian Grandma"): (
-        "Happy Holiday {recipient}.\n\n"
-        "Winter is cold but the house is warm. I cooked for two days straight. "
-        "Come eat. Then eat more. That's what holidays are for."
+    ("חג שמח", "סבתא רוסיה"): (
+        "חג שמח {recipient}.\n\n"
+        "החורף קר אבל הבית חם. בישלתי יומיים ברציפות. "
+        "בואו לאכול. ואז עוד קצת. בשביל זה יש חגים."
     ),
-    ("Missing You", "Polish Grandma"): (
-        "I miss you {recipient} 💛\n\n"
-        "The house is too quiet without you. I keep cooking portions for one extra person. "
-        "When are you visiting? I already froze your favorite food."
+    ("מתגעגעת אליכם", "סבתא פולניה"): (
+        "מתגעגעת אליכם {recipient} 💛\n\n"
+        "הבית שקט מדי בלייכם. אני ממשיכה לבשל מנות לעוד אחד. "
+        "מתי אתם באים לבקר? כבר הקפאתי את האוכל האהוב עליכם."
     ),
-    ("Missing You", "Moroccan Grandma"): (
-        "I miss you {recipient} 💛\n\n"
-        "Every day I think — my {recipient_short} should be here for tea and stories. "
-        "Come home soon. The mint is fresh and my arms are empty."
+    ("מתגעגעת אליכם", "סבתא מרוקאית"): (
+        "מתגעגעת אליכם {recipient} 💛\n\n"
+        "כל יום אני חושבת — ה{recipient_short} שלי צריכים להיות כאן לתה ולסיפורים. "
+        "בואו הביתה בקרוב. הנענע טרייה והידיים שלי ריקות."
     ),
-    ("Missing You", "Iraqi Grandma"): (
-        "I miss you {recipient} 💛\n\n"
-        "Distance is hard on an old heart. I pray for you every morning. "
-        "Remember — no matter how far, you always have a home with me."
+    ("מתגעגעת אליכם", "סבתא עיראקית"): (
+        "מתגעגעת אליכם {recipient} 💛\n\n"
+        "מרחק קשה על לב זקן. אני מתפללת בשבילכם כל בוקר. "
+        "זכרו — לא משנה כמה רחוק, תמיד יש לכם בית אצלי."
     ),
-    ("Missing You", "Russian Grandma"): (
-        "I miss you {recipient}.\n\n"
-        "Come visit. I made your favorite food and saved your blanket. "
-        "Don't make an old woman wait — time doesn't wait for anyone."
+    ("מתגעגעת אליכם", "סבתא רוסיה"): (
+        "מתגעגעת אליכם {recipient}.\n\n"
+        "בואו לבקר. הכנתי את האוכל האהוב עליכם ושמרתי את השמיכה. "
+        "אל תשאירו סבתא זקנה מחכה — הזמן לא מחכה לאף אחד."
     ),
-    ("Congratulations", "Polish Grandma"): (
-        "Congratulations {recipient}! 🎉\n\n"
-        "I'm so proud I could burst! But also — did you eat something to celebrate? "
-        "Success means nothing on an empty stomach. Come, I'll make you a feast."
+    ("ברכות", "סבתא פולניה"): (
+        "ברכות {recipient}! 🎉\n\n"
+        "אני כל כך גאה שיכולתי להתפוצץ! אבל גם — "
+        "אכלתם משהו לחגוג? הצלחה בלי אוכל בבטן לא שווה כלום. בואו, אכין לכם משתה."
     ),
-    ("Congratulations", "Moroccan Grandma"): (
-        "Congratulations {recipient}! 🎊\n\n"
-        "Mabrouk! I knew you could do it — you have fire in your soul. "
-        "Tonight we celebrate with music, sweets, and the whole family!"
+    ("ברכות", "סבתא מרוקאית"): (
+        "ברכות {recipient}! 🎊\n\n"
+        "מברוק! ידעתי שתצליחו — יש לכם אש בנשמה. "
+        "הלילה חוגגים עם מוזיקה, ממתקים וכל המשפחה!"
     ),
-    ("Congratulations", "Iraqi Grandma"): (
-        "Congratulations {recipient}! 🎉\n\n"
-        "Baruch Hashem! My heart is overflowing with pride. "
-        "You honor our family with every achievement. May God bless what's ahead."
+    ("ברכות", "סבתא עיראקית"): (
+        "ברכות {recipient}! 🎉\n\n"
+        "ברוך השם! הלב שלי מתמלא גאווה. "
+        "אתם מכבדים את המשפחה בכל הישג. שיהיה בהצלחה במה שעוד לפניכם."
     ),
-    ("Congratulations", "Russian Grandma"): (
-        "Congratulations {recipient}.\n\n"
-        "I always knew you were capable. Hard work pays off — "
-        "now come celebrate properly. I made enough food for everyone."
+    ("ברכות", "סבתא רוסיה"): (
+        "ברכות {recipient}.\n\n"
+        "תמיד ידעתי שאתם מסוגלים. עבודה קשה משתלמת — "
+        "עכשיו בואו לחגוג כמו שצריך. הכנתי אוכל לכולם."
     ),
 }
 
 
 def format_recipient(recipient):
     mapping = {
-        "Grandchildren": "my dear grandchildren",
-        "Grandson": "my dear grandson",
-        "Granddaughter": "my dear granddaughter",
-        "Family": "my dear family",
-        "Son": "my dear son",
-        "Daughter": "my dear daughter",
+        "נכדים": "נכדים שלי היקרים",
+        "נכד": "הנכד שלי היקר",
+        "נכדה": "הנכדה שלי היקרה",
+        "משפחה": "המשפחה שלי היקרה",
+        "בן": "הבן שלי היקר",
+        "בת": "הבת שלי היקרה",
     }
-    return mapping.get(recipient, f"my dear {recipient.lower()}")
+    return mapping.get(recipient, recipient)
 
 
 def format_recipient_short(recipient):
     mapping = {
-        "Grandchildren": "grandchildren",
-        "Grandson": "grandson",
-        "Granddaughter": "granddaughter",
-        "Family": "family",
-        "Son": "son",
-        "Daughter": "daughter",
+        "נכדים": "נכדים",
+        "נכד": "נכד",
+        "נכדה": "נכדה",
+        "משפחה": "משפחה",
+        "בן": "בן",
+        "בת": "בת",
     }
-    return mapping.get(recipient, recipient.lower())
+    return mapping.get(recipient, recipient)
 
 
 def generate_greeting(greeting_type, recipient, grandma_style):
     if greeting_type not in GREETING_TYPES:
-        raise ValueError(f"Invalid greeting type: {greeting_type}")
+        raise ValueError(f"סוג ברכה לא תקין: {greeting_type}")
     if recipient not in RECIPIENTS:
-        raise ValueError(f"Invalid recipient: {recipient}")
+        raise ValueError(f"נמען לא תקין: {recipient}")
     if grandma_style not in GRANDMA_STYLES:
-        raise ValueError(f"Invalid grandma style: {grandma_style}")
+        raise ValueError(f"סגנון סבתא לא תקין: {grandma_style}")
 
     template = TEMPLATES.get((greeting_type, grandma_style))
     if template is None:
-        raise ValueError(
-            f"No template for {greeting_type} + {grandma_style}"
-        )
+        raise ValueError(f"אין תבנית עבור {greeting_type} + {grandma_style}")
 
     return template.format(
         recipient=format_recipient(recipient),
