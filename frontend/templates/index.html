@@ -47,55 +47,33 @@
             </form>
         </section>
 
-        {% set greeting_messages = get_flashed_messages(category_filter='greeting') %}
-        {% set gif_messages = get_flashed_messages(category_filter='gif') %}
-        {% set error_messages = get_flashed_messages() %}
-        {% if greeting_messages or error_messages %}
+        {% set greeting_messages = get_flashed_messages(category_filter=('greeting',)) %}
+        {% set gif_messages = get_flashed_messages(category_filter=('gif',)) %}
+        {% set error_messages = get_flashed_messages(category_filter=('message',)) %}
+
+        {% if error_messages %}
+        <section class="card error-card">
+            {% for message in error_messages %}
+            <p class="error-text">{{ message }}</p>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        {% if greeting_messages or gif_messages %}
         <section class="card result">
             <h2>הברכה שלך</h2>
             {% for message in greeting_messages %}
             <p class="greeting-text">{{ message }}</p>
             {% endfor %}
-            {% for message in error_messages %}
-            <p class="error-text">{{ message }}</p>
-            {% endfor %}
             {% for gif_path in gif_messages %}
             <img
-                src="{{ url_for('static', filename=gif_path) }}"
+                src="{{ url_for('static', filename=gif_path) }}?v=4"
                 alt="גיף ברכה"
                 class="greeting-gif"
             >
             {% endfor %}
         </section>
         {% endif %}
-
-        <section class="card history">
-            <h2>היסטוריית ברכות</h2>
-            <p class="history-note">מוצגות 20 הברכות האחרונות</p>
-
-            {% if greetings %}
-            <div class="history-list">
-                {% for greeting in greetings %}
-                <article class="history-item">
-                    <div class="history-content">
-                        <div class="history-meta">
-                            <span>{{ greeting.created_at }}</span>
-                            <span>{{ greeting.greeting_type }} · {{ greeting.recipient }} · {{ greeting.grandma_style }}</span>
-                        </div>
-                        <p class="greeting-text">{{ greeting.generated_text }}</p>
-                    </div>
-                    <img
-                        src="{{ url_for('static', filename=get_gif_path(greeting.greeting_type)) }}"
-                        alt="גיף {{ greeting.greeting_type }}"
-                        class="history-gif"
-                    >
-                </article>
-                {% endfor %}
-            </div>
-            {% else %}
-            <p class="empty-state">עדיין אין ברכות. צרי את הראשונה למעלה!</p>
-            {% endif %}
-        </section>
     </main>
 </body>
 </html>

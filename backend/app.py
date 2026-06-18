@@ -3,7 +3,7 @@ from pathlib import Path
 from flask import Flask, flash, redirect, render_template, request, url_for
 
 from config import GRANDMA_STYLES, GREETING_TYPES, RECIPIENTS
-from database import get_recent_greetings, init_db, save_greeting
+from database import init_db, save_greeting
 from gif_selector import get_gif_path
 from greeting_generator import generate_greeting
 
@@ -24,8 +24,6 @@ def index():
         greeting_types=GREETING_TYPES,
         recipients=RECIPIENTS,
         grandma_styles=GRANDMA_STYLES,
-        greetings=get_recent_greetings(),
-        get_gif_path=get_gif_path,
     )
 
 
@@ -47,7 +45,7 @@ def generate():
         generated_text = generate_greeting(greeting_type, recipient, grandma_style)
         save_greeting(greeting_type, recipient, grandma_style, generated_text)
         flash(generated_text, "greeting")
-        flash(get_gif_path(greeting_type), "gif")
+        flash(get_gif_path(greeting_type, grandma_style), "gif")
     except ValueError as exc:
         flash(str(exc))
 
