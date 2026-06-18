@@ -6,7 +6,7 @@ This file is the **single source of truth** for the Grandma Greeting Generator p
 
 Any developer or AI assistant working on this repository must read this document first before making changes. It defines what the project is, why it exists, what is required, what is forbidden, how development is phased, and what success looks like at each stage.
 
-**Current project stage:** Phase 1 complete. Local Flask + SQLite application is implemented.
+**Current project stage:** Phase 1 complete. Local Hebrew-first Flask + SQLite application with GIF support.
 
 ---
 
@@ -20,15 +20,17 @@ The application allows users to generate funny, personalized greetings in differ
 
 **Input:**
 
-- Greeting Type: Shabbat Shalom
-- Recipient: Grandchildren
-- Grandma Style: Polish Grandma
+- Greeting Type: שבת שלום
+- Recipient: נכדים
+- Grandma Style: סבתא פולניה
 
 **Output:**
 
-> Shabbat Shalom my dear grandchildren ❤️
+> שבת שלום נכדים שלי היקרים ❤️
 >
-> Did you eat today? You look too skinny in the last picture.
+> אכלתם היום משהו? אתם נראים רזים מדי בתמונה האחרונה.
+
+Plus a matching local GIF displayed alongside the greeting text.
 
 ---
 
@@ -170,40 +172,56 @@ The following must **not** be used unless explicitly approved later in writing:
 
 ### User Interface (Single Page)
 
-The application is a single-page web application with the following controls:
+The application is a **Hebrew-first**, right-to-left single-page web application targeting Israeli users and grandmothers.
 
-#### Greeting Type (dropdown)
+#### Greeting Type (dropdown) — סוג ברכה
 
-- Shabbat Shalom
-- Happy Birthday
-- Holiday Greeting
-- Missing You
-- Congratulations
+- שבת שלום
+- מזל טוב
+- חג שמח
+- מתגעגעת אליכם
+- ברכות
 
-#### Recipient (dropdown)
+#### Recipient (dropdown) — למי הברכה?
 
-- Grandchildren
-- Grandson
-- Granddaughter
-- Family
-- Son
-- Daughter
+- נכדים
+- נכד
+- נכדה
+- משפחה
+- בן
+- בת
 
-#### Grandma Style (dropdown)
+#### Grandma Style (dropdown) — סגנון סבתא
 
-- Polish Grandma
-- Moroccan Grandma
-- Iraqi Grandma
-- Russian Grandma
+- סבתא פולניה
+- סבתא מרוקאית
+- סבתא עיראקית
+- סבתא רוסיה
 
-#### Generate Button
+#### Generate Button — צור ברכה
 
 When pressed:
 
-- Generate a greeting using **predefined templates**
+- Generate a greeting using **predefined templates** (in Hebrew)
+- Select a matching **local GIF** based on greeting type
 - Use **pure Python logic** — no AI, no external APIs
 - **Store every generated greeting** in the database
-- Display the result on the page
+- Display the greeting text and GIF on the page
+
+### GIF Requirements (Phase 1)
+
+- GIFs are **predefined local files** in `frontend/static/gifs/`
+- GIF selection is based on **greeting type only**
+- Do **not** store GIF binary data in the database
+- Do **not** use external APIs or AI image generation
+
+| Greeting Type | GIF File |
+|---------------|----------|
+| שבת שלום | `shabbat_shalom.gif` |
+| מזל טוב | `mazal_tov.gif` |
+| חג שמח | `chag_sameach.gif` |
+| מתגעגעת אליכם | `miss_you.gif` |
+| ברכות | `brachot.gif` |
 
 ### Greeting Generation Rules
 
@@ -266,11 +284,12 @@ SQLite Database
 #### What Phase 1 Includes
 
 - Flask backend serving the application
-- HTML + CSS frontend (Jinja templates)
+- Hebrew-first HTML + CSS frontend (Jinja templates, RTL)
 - SQLite database for persistence
-- Greeting generation from predefined Python templates
+- Greeting generation from predefined Python templates (Hebrew)
+- Local GIF assets mapped by greeting type
 - Form with three dropdowns and a Generate button
-- Greeting history showing the latest 20 entries
+- Greeting history showing the latest 20 entries (with GIF thumbnails)
 - Local development and testing only
 
 #### What Phase 1 Does NOT Include
