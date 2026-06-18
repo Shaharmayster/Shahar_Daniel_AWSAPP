@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grandma Greeting Generator</title>
+    <title>מחולל ברכות סבתא</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <main class="container">
         <header>
-            <h1>Grandma Greeting Generator</h1>
-            <p class="subtitle">Generate a funny personalized greeting in your favorite grandma style.</p>
+            <h1>מחולל ברכות סבתא</h1>
+            <p class="subtitle">צרי ברכה מצחיקה ואישית בסגנון הסבתא שלך</p>
         </header>
 
         <section class="card">
-            <h2>Create a Greeting</h2>
+            <h2>יצירת ברכה</h2>
             <form method="POST" action="{{ url_for('generate') }}">
                 <div class="form-group">
-                    <label for="greeting_type">Greeting Type</label>
+                    <label for="greeting_type">סוג ברכה</label>
                     <select id="greeting_type" name="greeting_type" required>
                         {% for option in greeting_types %}
                         <option value="{{ option }}">{{ option }}</option>
@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="recipient">Recipient</label>
+                    <label for="recipient">למי הברכה?</label>
                     <select id="recipient" name="recipient" required>
                         {% for option in recipients %}
                         <option value="{{ option }}">{{ option }}</option>
@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="grandma_style">Grandma Style</label>
+                    <label for="grandma_style">סגנון סבתא</label>
                     <select id="grandma_style" name="grandma_style" required>
                         {% for option in grandma_styles %}
                         <option value="{{ option }}">{{ option }}</option>
@@ -43,39 +43,57 @@
                     </select>
                 </div>
 
-                <button type="submit">Generate</button>
+                <button type="submit">צור ברכה</button>
             </form>
         </section>
 
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
+        {% set greeting_messages = get_flashed_messages(category_filter='greeting') %}
+        {% set gif_messages = get_flashed_messages(category_filter='gif') %}
+        {% set error_messages = get_flashed_messages() %}
+        {% if greeting_messages or error_messages %}
         <section class="card result">
-            <h2>Your Greeting</h2>
-            {% for message in messages %}
+            <h2>הברכה שלך</h2>
+            {% for message in greeting_messages %}
             <p class="greeting-text">{{ message }}</p>
+            {% endfor %}
+            {% for message in error_messages %}
+            <p class="error-text">{{ message }}</p>
+            {% endfor %}
+            {% for gif_path in gif_messages %}
+            <img
+                src="{{ url_for('static', filename=gif_path) }}"
+                alt="גיף ברכה"
+                class="greeting-gif"
+            >
             {% endfor %}
         </section>
         {% endif %}
-        {% endwith %}
 
         <section class="card history">
-            <h2>Greeting History</h2>
-            <p class="history-note">Showing the latest 20 greetings.</p>
+            <h2>היסטוריית ברכות</h2>
+            <p class="history-note">מוצגות 20 הברכות האחרונות</p>
 
             {% if greetings %}
             <div class="history-list">
                 {% for greeting in greetings %}
                 <article class="history-item">
-                    <div class="history-meta">
-                        <span>{{ greeting.created_at }}</span>
-                        <span>{{ greeting.greeting_type }} · {{ greeting.recipient }} · {{ greeting.grandma_style }}</span>
+                    <div class="history-content">
+                        <div class="history-meta">
+                            <span>{{ greeting.created_at }}</span>
+                            <span>{{ greeting.greeting_type }} · {{ greeting.recipient }} · {{ greeting.grandma_style }}</span>
+                        </div>
+                        <p class="greeting-text">{{ greeting.generated_text }}</p>
                     </div>
-                    <p class="greeting-text">{{ greeting.generated_text }}</p>
+                    <img
+                        src="{{ url_for('static', filename=get_gif_path(greeting.greeting_type)) }}"
+                        alt="גיף {{ greeting.greeting_type }}"
+                        class="history-gif"
+                    >
                 </article>
                 {% endfor %}
             </div>
             {% else %}
-            <p class="empty-state">No greetings yet. Generate your first one above!</p>
+            <p class="empty-state">עדיין אין ברכות. צרי את הראשונה למעלה!</p>
             {% endif %}
         </section>
     </main>

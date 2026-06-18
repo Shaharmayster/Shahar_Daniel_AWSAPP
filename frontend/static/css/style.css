@@ -4,10 +4,11 @@
 
 body {
     margin: 0;
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: "Arial", "Helvetica Neue", sans-serif;
     background: #f7f1e8;
     color: #2f2a24;
     line-height: 1.6;
+    direction: rtl;
 }
 
 .container {
@@ -67,6 +68,7 @@ select {
     border: 1px solid #cdbda8;
     border-radius: 8px;
     background: #fff;
+    text-align: right;
 }
 
 button {
@@ -84,12 +86,26 @@ button:hover {
 }
 
 .result {
-    border-left: 4px solid #8b4b2a;
+    border-right: 4px solid #8b4b2a;
 }
 
 .greeting-text {
     margin: 0;
     white-space: pre-line;
+}
+
+.error-text {
+    margin: 0;
+    color: #8b2a2a;
+}
+
+.greeting-gif {
+    display: block;
+    max-width: 280px;
+    width: 100%;
+    margin: 1rem auto 0;
+    border-radius: 8px;
+    border: 1px solid #e2d6c5;
 }
 
 .history-list {
@@ -98,6 +114,9 @@ button:hover {
 }
 
 .history-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
     padding-top: 1rem;
     border-top: 1px solid #eee4d7;
 }
@@ -105,6 +124,11 @@ button:hover {
 .history-item:first-child {
     padding-top: 0;
     border-top: none;
+}
+
+.history-content {
+    flex: 1;
+    min-width: 0;
 }
 
 .history-meta {
@@ -116,6 +140,15 @@ button:hover {
     color: #6a6156;
 }
 
+.history-gif {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e2d6c5;
+    flex-shrink: 0;
+}
+
 @media (max-width: 600px) {
     h1 {
         font-size: 1.6rem;
@@ -123,5 +156,15 @@ button:hover {
 
     .container {
         padding: 1.25rem 0.75rem 2rem;
+    }
+
+    .history-item {
+        flex-direction: column;
+    }
+
+    .history-gif {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
     }
 }
