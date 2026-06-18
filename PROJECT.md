@@ -6,7 +6,7 @@ This file is the **single source of truth** for the Grandma Greeting Generator p
 
 Any developer or AI assistant working on this repository must read this document first before making changes. It defines what the project is, why it exists, what is required, what is forbidden, how development is phased, and what success looks like at each stage.
 
-**Current project stage:** Phase 1 complete. Local Hebrew-first Flask + SQLite application with GIF support.
+**Current project stage:** Phase 1 complete (June 2026). Local Hebrew-first Flask + SQLite application with static grandma GIF cards. Ready to begin Phase 2.
 
 ---
 
@@ -203,25 +203,28 @@ The application is a **Hebrew-first**, right-to-left single-page web application
 When pressed:
 
 - Generate a greeting using **predefined templates** (in Hebrew)
-- Select a matching **local GIF** based on greeting type
+- Select a matching **local static GIF** based on greeting type and grandma style
 - Use **pure Python logic** — no AI, no external APIs
 - **Store every generated greeting** in the database
-- Display the greeting text and GIF on the page
+- Display the greeting text and GIF on the page (no history list in the UI)
 
 ### GIF Requirements (Phase 1)
 
-- GIFs are **predefined local files** in `frontend/static/gifs/`
-- GIF selection is based on **greeting type only**
+- GIFs are **predefined local static files** in `frontend/static/gifs/`
+- GIF selection is based on **greeting type + grandma style** (20 combinations)
+- Each GIF shows a grandma illustration, Hebrew greeting title, and a short blessing phrase
+- GIFs are **not animated** (single frame)
 - Do **not** store GIF binary data in the database
 - Do **not** use external APIs or AI image generation
+- GIFs can be regenerated with `scripts/generate_gifs.py`
 
-| Greeting Type | GIF File |
-|---------------|----------|
-| שבת שלום | `shabbat_shalom.gif` |
-| מזל טוב | `mazal_tov.gif` |
-| חג שמח | `chag_sameach.gif` |
-| מתגעגעת אליכם | `miss_you.gif` |
-| ברכות | `brachot.gif` |
+| Grandma Style | Greeting Type | GIF File Example |
+|---------------|---------------|------------------|
+| סבתא פולניה | שבת שלום | `polish_shabbat.gif` |
+| סבתא מרוקאית | מזל טוב | `moroccan_birthday.gif` |
+| סבתא עיראקית | חג שמח | `iraqi_holiday.gif` |
+| סבתא רוסיה | מתגעגעת אליכם | `russian_miss_you.gif` |
+| (any style) | ברכות | `{style}_blessings.gif` |
 
 ### Greeting Generation Rules
 
@@ -247,9 +250,9 @@ When pressed:
 
 ### Greeting History
 
-- Display the most recent generated greetings on the home page
-- Show the **latest 20 greetings**
-- This feature exists to support demonstration of database **read** operations in later phases
+- Every greeting is **saved to SQLite** on generation (write operation)
+- Greeting history is **not displayed** in the Phase 1 UI (by design)
+- Database read operations for history will be demonstrated in Phase 2/3
 
 ---
 
@@ -267,7 +270,9 @@ flowchart LR
 
 ### Phase 1 — Local Development
 
-**Status:** Complete
+**Status:** Complete (June 2026)
+
+**Repository:** https://github.com/Shaharmayster/Shahar_Daniel_AWSAPP
 
 **Goal:** Build a complete, working application locally with no cloud dependencies.
 
@@ -284,13 +289,28 @@ SQLite Database
 #### What Phase 1 Includes
 
 - Flask backend serving the application
-- Hebrew-first HTML + CSS frontend (Jinja templates, RTL)
+- Hebrew-first HTML + CSS frontend (Jinja templates, RTL, dark blue theme)
 - SQLite database for persistence
-- Greeting generation from predefined Python templates (Hebrew)
-- Local GIF assets mapped by greeting type
+- Greeting generation from predefined Python templates (Hebrew, 20 combinations)
+- Static local GIF assets (grandma illustration + Hebrew text per style and greeting type)
 - Form with three dropdowns and a Generate button
-- Greeting history showing the latest 20 entries (with GIF thumbnails)
+- `RUN.SH` script for local startup
 - Local development and testing only
+
+#### What Was Delivered in Phase 1
+
+| Component | Status |
+|-----------|--------|
+| `backend/app.py` — Flask routes | Done |
+| `backend/config.py` — Hebrew constants, `DATABASE_URL` | Done |
+| `backend/database.py` — isolated SQLite layer | Done |
+| `backend/greeting_generator.py` — 20 Hebrew templates | Done |
+| `backend/gif_selector.py` — GIF mapping by style + type | Done |
+| `frontend/templates/index.html` — Hebrew RTL UI | Done |
+| `frontend/static/css/style.css` — dark blue theme | Done |
+| `frontend/static/gifs/` — 21 static GIF files | Done |
+| `scripts/generate_gifs.py` — GIF asset generator | Done |
+| `terraform/` — placeholder for Phase 3 | Done |
 
 #### What Phase 1 Does NOT Include
 
@@ -304,18 +324,21 @@ SQLite Database
 #### Phase 1 Success Criteria
 
 - [x] Application runs locally without errors
-- [x] User can select greeting type, recipient, and grandma style
-- [x] Generate button produces a humorous, personalized greeting
+- [x] User can select greeting type, recipient, and grandma style (Hebrew UI)
+- [x] Generate button produces a humorous, personalized Hebrew greeting
+- [x] Matching static GIF is displayed (grandma + Hebrew blessing text)
 - [x] Every generated greeting is saved to SQLite
-- [x] Latest 20 greetings are displayed on the page
 - [x] Data persists across application restarts
 - [x] No forbidden technologies are used
+- [x] Database layer isolated in `database.py` (Phase 2 ready)
+- [x] `DATABASE_URL` configured via environment variable
+- [x] Code pushed to GitHub repository
 
 ---
 
 ### Phase 2 — Database Migration
 
-**Status:** Not started (depends on Phase 1 completion)
+**Status:** Not started (Phase 1 complete — ready to begin)
 
 **Goal:** Replace SQLite with the instructor-supplied RDS database without changing application logic.
 
@@ -428,13 +451,13 @@ The project is considered fully successful when:
 
 | Criterion | Phase |
 |-----------|-------|
-| Local application works end-to-end | Phase 1 |
-| Application works with RDS | Phase 2 |
-| Terraform deploys full AWS infrastructure | Phase 3 |
-| Application runs on AWS behind ELB and ASG | Phase 3 |
-| Database read/write demonstrated live | Phase 3 |
-| System survives EC2 instance termination | Phase 3 |
-| Final presentation requirements met | All |
+| Local application works end-to-end | Phase 1 | Done |
+| Application works with RDS | Phase 2 | Pending |
+| Terraform deploys full AWS infrastructure | Phase 3 | Pending |
+| Application runs on AWS behind ELB and ASG | Phase 3 | Pending |
+| Database read/write demonstrated live | Phase 3 | Pending |
+| System survives EC2 instance termination | Phase 3 | Pending |
+| Final presentation requirements met | All | Pending |
 
 **Ultimate goal:** Pass the course project with a fully working, highly available cloud deployment.
 

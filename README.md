@@ -4,7 +4,15 @@
 
 האפליקציה פשוטה בכוונה — המטרה העיקרית היא להדגים מיומנויות תשתית ענן (AWS, Terraform, זמינות גבוהה), לא מורכבות אפליקטיבית.
 
-**סטטוס נוכחי:** Phase 1 הושלם (Flask מקומי + SQLite + ממשק עברי + גיפים).
+## סטטוס פרויקט
+
+| שלב | סטטוס |
+|-----|--------|
+| **Phase 1** — פיתוח מקומי | **הושלם** (יוני 2026) |
+| Phase 2 — מעבר ל-RDS | לא התחיל |
+| Phase 3 — פריסה ב-AWS | לא התחיל |
+
+**ריפו:** https://github.com/Shaharmayster/Shahar_Daniel_AWSAPP
 
 לדרישות מלאות, ראו [PROJECT.md](PROJECT.md).
 
@@ -14,9 +22,8 @@
 
 1. המשתמשת בוחרת **סוג ברכה**, **נמען** ו**סגנון סבתא**
 2. המערכת מייצרת ברכה בעברית מתבניות Python מוגדרות מראש
-3. המערכת מציגה גיף מקומי תואם לסוג הברכה
-4. הברכה נשמרת במסד הנתונים
-5. 20 הברכות האחרונות מוצגות בעמוד (כולל גיפים)
+3. המערכת מציגה גיף סטטי עם איור סבתא וכיתוב בעברית
+4. הברכה נשמרת ב-SQLite (ללא הצגת היסטוריה בממשק)
 
 ### דוגמה
 
@@ -32,7 +39,7 @@
 >
 > אכלתם היום משהו? אתם נראים רזים מדי בתמונה האחרונה.
 
-+ גיף `shabbat_shalom.gif`
++ גיף `polish_shabbat.gif` (סבתא פולנית + כיתוב "שבת שלום")
 
 ---
 
@@ -62,58 +69,56 @@ pip install -r requirements.txt
 flask --app app run --debug
 ```
 
-**הערה:** אם יש `local.db` ישן עם נתונים באנגלית, מומלץ למחוק אותו לפני הרצה מחדש.
-
 ---
 
 ## מבנה הפרויקט
 
 ```
-├── PROJECT.md
+├── PROJECT.md              # מפרט מלא (source of truth)
 ├── README.md
-├── RUN.SH
-├── backend/
+├── RUN.SH                  # סקריפט הרצה מקומית
+├── backend/                # Flask + Python
 │   ├── app.py
 │   ├── config.py
 │   ├── database.py
 │   ├── greeting_generator.py
 │   ├── gif_selector.py
 │   └── requirements.txt
-├── frontend/
+├── frontend/               # HTML, CSS, Jinja
 │   ├── templates/
 │   └── static/
 │       ├── css/
-│       └── gifs/
-└── terraform/
+│       └── gifs/           # 21 גיפים סטטיים
+├── scripts/
+│   └── generate_gifs.py    # יצירת גיפים (dev only)
+└── terraform/              # Phase 3 — לא מומש
 ```
 
 ---
 
 ## גיפים
 
-גיפים מוגדרים מראש בתיקייה `frontend/static/gifs/`:
+20 גיפים סטטיים (4 סגנונות סבתא × 5 סוגי ברכה) + `default.gif`:
 
-| סוג ברכה | קובץ |
-|----------|------|
-| שבת שלום | `shabbat_shalom.gif` |
-| מזל טוב | `mazal_tov.gif` |
-| חג שמח | `chag_sameach.gif` |
-| מתגעגעת אליכם | `miss_you.gif` |
-| ברכות | `brachot.gif` |
+| סגנון סבתא | סוג ברכה | קובץ |
+|------------|----------|------|
+| סבתא פולניה | שבת שלום | `polish_shabbat.gif` |
+| סבתא מרוקאית | מזל טוב | `moroccan_birthday.gif` |
+| סבתא עיראקית | חג שמח | `iraqi_holiday.gif` |
+| סבתא רוסיה | מתגעגעת אליכם | `russian_miss_you.gif` |
 
-הגיף נבחר לפי סוג הברכה בלבד. לא נשמר במסד הנתונים.
+הגיף נבחר לפי **סגנון סבתא + סוג ברכה**. לא נשמר במסד הנתונים.
 
 ---
 
-## טכנולוגיות
+## טכנולוגיות (Phase 1)
 
 | שכבה | טכנולוגיה |
 |------|-----------|
 | Backend | Python, Flask |
 | Frontend | HTML, CSS, Jinja (RTL, עברית) |
-| Database (Phase 1) | SQLite |
-| Database (Phase 2+) | RDS MySQL |
-| Infrastructure (Phase 3) | Terraform, AWS |
+| Database | SQLite |
+| Infrastructure (Phase 3) | Terraform, AWS, RDS |
 
 ---
 
@@ -125,13 +130,10 @@ flask --app app run --debug
 
 ---
 
-## שלבי פיתוח
+## שלבים הבאים
 
-| שלב | סטטוס | תיאור |
-|-----|--------|--------|
-| Phase 1 | הושלם | אפליקציה מקומית בעברית עם SQLite וגיפים |
-| Phase 2 | מתוכנן | מעבר ל-RDS |
-| Phase 3 | מתוכנן | פריסה ב-AWS עם Terraform |
+- **Phase 2:** החלפת SQLite ב-RDS (שכבת `database.py` בלבד)
+- **Phase 3:** פריסה ב-AWS עם Terraform (VPC, EC2, ELB, ASG)
 
 ---
 
@@ -139,7 +141,7 @@ flask --app app run --debug
 
 **מחשוב ושירותי ענן מנוהלים**
 
-ארכיטקטורת יעד:
+ארכיטקטורת יעד (Phase 3):
 
 ```
 Browser → ELB → ASG → EC2 (×2) → RDS
