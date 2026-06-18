@@ -1,7 +1,6 @@
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urlparse
 
 from config import DATABASE_URL
 
@@ -9,15 +8,16 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 def _get_sqlite_path():
-    parsed = urlparse(DATABASE_URL)
-    if parsed.scheme != "sqlite":
+    if not DATABASE_URL.startswith("sqlite:///"):
         raise ValueError(
             "Phase 1 supports SQLite only. Set DATABASE_URL to sqlite:///local.db"
         )
-    db_path = parsed.path or parsed.netloc
-    if db_path.startswith("/"):
-        return Path(db_path)
-    return PROJECT_ROOT / db_path
+
+    db_path = DATABASE_URL[len("sqlite:///") :]
+    path = Path(db_path)
+    if path.is_absolute():
+        return path
+    return PROJECT_ROOT / path
 
 
 def _get_connection():
