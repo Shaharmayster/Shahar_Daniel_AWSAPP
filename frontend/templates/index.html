@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grandma Greeting Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="container">
+        <header>
+            <h1>Grandma Greeting Generator</h1>
+            <p class="subtitle">Generate a funny personalized greeting in your favorite grandma style.</p>
+        </header>
+
+        <section class="card">
+            <h2>Create a Greeting</h2>
+            <form method="POST" action="{{ url_for('generate') }}">
+                <div class="form-group">
+                    <label for="greeting_type">Greeting Type</label>
+                    <select id="greeting_type" name="greeting_type" required>
+                        {% for option in greeting_types %}
+                        <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="recipient">Recipient</label>
+                    <select id="recipient" name="recipient" required>
+                        {% for option in recipients %}
+                        <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="grandma_style">Grandma Style</label>
+                    <select id="grandma_style" name="grandma_style" required>
+                        {% for option in grandma_styles %}
+                        <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit">Generate</button>
+            </form>
+        </section>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <section class="card result">
+            <h2>Your Greeting</h2>
+            {% for message in messages %}
+            <p class="greeting-text">{{ message }}</p>
+            {% endfor %}
+        </section>
+        {% endif %}
+        {% endwith %}
+
+        <section class="card history">
+            <h2>Greeting History</h2>
+            <p class="history-note">Showing the latest 20 greetings.</p>
+
+            {% if greetings %}
+            <div class="history-list">
+                {% for greeting in greetings %}
+                <article class="history-item">
+                    <div class="history-meta">
+                        <span>{{ greeting.created_at }}</span>
+                        <span>{{ greeting.greeting_type }} · {{ greeting.recipient }} · {{ greeting.grandma_style }}</span>
+                    </div>
+                    <p class="greeting-text">{{ greeting.generated_text }}</p>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="empty-state">No greetings yet. Generate your first one above!</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>
