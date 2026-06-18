@@ -6,7 +6,7 @@ This file is the **single source of truth** for the Grandma Greeting Generator p
 
 Any developer or AI assistant working on this repository must read this document first before making changes. It defines what the project is, why it exists, what is required, what is forbidden, how development is phased, and what success looks like at each stage.
 
-**Current project stage:** Phase 1 complete (June 2026). Local Hebrew-first Flask + SQLite application with static grandma GIF cards. Ready to begin Phase 2.
+**Current project stage:** Phase 2 implementation complete. Application supports SQLite (default) and RDS MySQL via `DATABASE_URL`. Awaiting instructor RDS credentials for live verification.
 
 ---
 
@@ -338,7 +338,7 @@ SQLite Database
 
 ### Phase 2 — Database Migration
 
-**Status:** Not started (Phase 1 complete — ready to begin)
+**Status:** Complete (June 2026) — code ready; live RDS test pending instructor credentials
 
 **Goal:** Replace SQLite with the instructor-supplied RDS database without changing application logic.
 
@@ -363,20 +363,38 @@ SQLite Database
 
 The application must read the database connection string from an environment variable (e.g. `DATABASE_URL`) so that switching between SQLite and RDS requires **no code changes** — only a configuration change.
 
+#### What Was Delivered in Phase 2
+
+| Component | Status |
+|-----------|--------|
+| `database.py` — dual SQLite + MySQL support | Done |
+| `PyMySQL` dependency | Done |
+| `.env.example` — connection string template | Done |
+| SQLite regression verified | Done |
+| RDS live connection test | Pending instructor credentials |
+
+#### Switching to RDS
+
+1. Copy `.env.example` to `.env`
+2. Set `DATABASE_URL=mysql://user:password@rds-endpoint:3306/database_name`
+3. Run `./RUN.SH`
+4. Generate a greeting — data is written to RDS
+5. Verify with: `SELECT * FROM greetings ORDER BY id DESC LIMIT 5;`
+
 #### Phase 2 Success Criteria
 
-- [ ] Application connects to RDS successfully
-- [ ] Greeting generation works identically to Phase 1
-- [ ] Greetings are written to RDS
-- [ ] Greeting history reads from RDS
-- [ ] Application logic (beyond the database layer) is unchanged
-- [ ] Connection string is configured via environment variable
+- [ ] Application connects to RDS successfully (pending instructor credentials)
+- [x] Greeting generation works identically to Phase 1
+- [ ] Greetings are written to RDS (pending instructor credentials)
+- [ ] Greeting history reads from RDS (pending instructor credentials)
+- [x] Application logic (beyond the database layer) is unchanged
+- [x] Connection string is configured via environment variable
 
 ---
 
 ### Phase 3 — AWS Infrastructure Deployment
 
-**Status:** Not started (depends on Phase 2 completion)
+**Status:** Not started (Phase 2 complete — ready to begin)
 
 **Goal:** Deploy the application to AWS using Terraform, demonstrating high availability.
 
@@ -452,7 +470,7 @@ The project is considered fully successful when:
 | Criterion | Phase |
 |-----------|-------|
 | Local application works end-to-end | Phase 1 | Done |
-| Application works with RDS | Phase 2 | Pending |
+| Application works with RDS | Phase 2 | Code ready (live test pending) |
 | Terraform deploys full AWS infrastructure | Phase 3 | Pending |
 | Application runs on AWS behind ELB and ASG | Phase 3 | Pending |
 | Database read/write demonstrated live | Phase 3 | Pending |

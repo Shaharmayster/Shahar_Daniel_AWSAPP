@@ -9,7 +9,7 @@
 | שלב | סטטוס |
 |-----|--------|
 | **Phase 1** — פיתוח מקומי | **הושלם** (יוני 2026) |
-| Phase 2 — מעבר ל-RDS | לא התחיל |
+| **Phase 2** — מעבר ל-RDS | **הושלם** (קוד מוכן — ממתין לפרטי RDS מהמרצה) |
 | Phase 3 — פריסה ב-AWS | לא התחיל |
 
 **ריפו:** https://github.com/Shaharmayster/Shahar_Daniel_AWSAPP
@@ -23,7 +23,7 @@
 1. המשתמשת בוחרת **סוג ברכה**, **נמען** ו**סגנון סבתא**
 2. המערכת מייצרת ברכה בעברית מתבניות Python מוגדרות מראש
 3. המערכת מציגה גיף סטטי עם איור סבתא וכיתוב בעברית
-4. הברכה נשמרת ב-SQLite (ללא הצגת היסטוריה בממשק)
+4. הברכה נשמרת במסד הנתונים (SQLite או RDS)
 
 ### דוגמה
 
@@ -75,6 +75,7 @@ flask --app app run --debug
 
 ```
 ├── PROJECT.md              # מפרט מלא (source of truth)
+├── .env.example            # תבנית DATABASE_URL ל-RDS
 ├── README.md
 ├── RUN.SH                  # סקריפט הרצה מקומית
 ├── backend/                # Flask + Python
@@ -117,8 +118,8 @@ flask --app app run --debug
 |------|-----------|
 | Backend | Python, Flask |
 | Frontend | HTML, CSS, Jinja (RTL, עברית) |
-| Database | SQLite |
-| Infrastructure (Phase 3) | Terraform, AWS, RDS |
+| Database (Phase 1) | SQLite (ברירת מחדל) |
+| Database (Phase 2+) | RDS MySQL (דרך `DATABASE_URL`) |
 
 ---
 
@@ -128,12 +129,23 @@ flask --app app run --debug
 |--------|------------|--------|
 | `DATABASE_URL` | `sqlite:///local.db` | מחרוזת חיבור למסד נתונים |
 
+### מעבר ל-RDS (Phase 2)
+
+```bash
+cp .env.example .env
+# ערכי .env:
+# DATABASE_URL=mysql://USER:PASSWORD@RDS_ENDPOINT:3306/DATABASE_NAME
+./RUN.SH
+```
+
+מעבר חזרה ל-SQLite: `DATABASE_URL=sqlite:///local.db`
+
 ---
 
 ## שלבים הבאים
 
-- **Phase 2:** החלפת SQLite ב-RDS (שכבת `database.py` בלבד)
 - **Phase 3:** פריסה ב-AWS עם Terraform (VPC, EC2, ELB, ASG)
+- **RDS:** כשיתקבלו פרטים מהמרצה — הגדר `DATABASE_URL` ב-`.env` ובדוק חיבור
 
 ---
 
