@@ -6,7 +6,7 @@ This file is the **single source of truth** for the Grandma Greeting Generator p
 
 Any developer or AI assistant working on this repository must read this document first before making changes. It defines what the project is, why it exists, what is required, what is forbidden, how development is phased, and what success looks like at each stage.
 
-**Current project stage:** Phase 2 implementation complete. Application supports SQLite (default) and RDS MySQL via `DATABASE_URL`. Awaiting instructor RDS credentials for live verification.
+**Current project stage:** Phase 2 complete (Terraform infrastructure code prepared). Phase 3 (RDS creation and integration) is postponed until a few days before the final presentation.
 
 ---
 
@@ -136,7 +136,7 @@ During the final presentation (maximum 15 minutes), the following must be demons
 | Frontend scripting | **Minimal JavaScript** — only if absolutely necessary |
 | Templates | **Jinja** (server-side, rendered by Flask) |
 | Phase 1 database | **SQLite** |
-| Phase 2+ database | **RDS (MySQL)** — instructor-supplied |
+| Phase 3+ database | **RDS (MySQL)** — instructor-supplied, created manually |
 | Infrastructure | **Terraform** |
 | Cloud provider | **AWS** (mandatory services listed above) |
 
@@ -252,7 +252,7 @@ When pressed:
 
 - Every greeting is **saved to SQLite** on generation (write operation)
 - Greeting history is **not displayed** in the Phase 1 UI (by design)
-- Database read operations for history will be demonstrated in Phase 2/3
+- Database read operations for history will be demonstrated in Phase 3 and at final presentation
 
 ---
 
@@ -262,8 +262,9 @@ Development follows a strict phased approach. **Complete each phase fully before
 
 ```mermaid
 flowchart LR
-    Phase1[Phase1_Local] --> Phase2[Phase2_RDS]
-    Phase2 --> Phase3[Phase3_AWS]
+    Phase1[Phase1_Local] --> Phase2[Phase2_Terraform]
+    Phase2 --> Phase3[Phase3_RDS]
+    Phase3 --> FinalDeploy[Final_Deployment]
 ```
 
 ---
@@ -310,7 +311,7 @@ SQLite Database
 | `frontend/static/css/style.css` — dark blue theme | Done |
 | `frontend/static/gifs/` — 21 static GIF files | Done |
 | `scripts/generate_gifs.py` — GIF asset generator | Done |
-| `terraform/` — placeholder for Phase 3 | Done |
+| `terraform/` — placeholder directory | Done (Phase 1) |
 
 #### What Phase 1 Does NOT Include
 
@@ -336,67 +337,151 @@ SQLite Database
 
 ---
 
-### Phase 2 — Database Migration
+### Phase 2 — Terraform Infrastructure Preparation
 
-**Status:** Complete (June 2026) — code ready; live RDS test pending instructor credentials
+**Status:** Complete (June 2026)
 
-**Goal:** Replace SQLite with the instructor-supplied RDS database without changing application logic.
+**Goal:** Create all Terraform code required for the final AWS infrastructure **without deploying anything**. No AWS credentials, no `terraform apply`, and no resources created during this phase.
 
-#### What Changes
+#### What Phase 2 Includes
 
-- Database connection layer only
-- Connection string moved to environment variables
+- Complete Terraform project under `terraform/`
+- VPC, public subnets (2 AZs), Internet Gateway, route tables
+- Security groups (ALB + EC2)
+- Launch Template with placeholder `user_data`
+- Auto Scaling Group (minimum 2 instances)
+- Application Load Balancer, target group, HTTP listener
+- `terraform.tfvars.example` and operational `terraform/README.md`
 
-#### What Does NOT Change
+#### What Phase 2 Does NOT Include
 
-- Application business logic
-- Greeting generation logic
-- Frontend
-- Routes and user-facing behavior
+- `terraform apply` or any AWS resource creation
+- RDS (Phase 3)
+- Application deployment on EC2
+- Route53, CloudFront, ECS, EKS, Lambda, or other extra AWS services
+- AWS credentials or CLI configuration
 
-#### Connection String Migration
+#### Infrastructure Architecture (Terraform Code)
 
-| Phase | Connection |
-|-------|------------|
-| Phase 1 | `sqlite:///local.db` |
-| Phase 2 | `mysql://user:password@rds-endpoint/database` (via environment variable) |
+```
+Internet
+    ↓
+Application Load Balancer (HTTP :80)
+    ↓
+Target Group (:5000)
+    ↓
+EC2 Instance #1    EC2 Instance #2
+    (ASG, AZ-a)        (ASG, AZ-b)
+```
 
-The application must read the database connection string from an environment variable (e.g. `DATABASE_URL`) so that switching between SQLite and RDS requires **no code changes** — only a configuration change.
+RDS is **not** provisioned by Terraform. Database connection is added in Phase 3.
+
+#### Terraform File Structure
+
+```
+terraform/
+├── provider.tf
+├── variables.tf
+├── outputs.tf
+├── networking.tf
+├── security.tf
+├── alb.tf
+├── launch_template.tf
+├── asg.tf
+├── terraform.tfvars.example
+├── .gitignore
+└── README.md
+```
 
 #### What Was Delivered in Phase 2
 
 | Component | Status |
 |-----------|--------|
-| `database.py` — dual SQLite + MySQL support | Done |
-| `PyMySQL` dependency | Done |
-| `.env.example` — connection string template | Done |
-| SQLite regression verified | Done |
-| RDS live connection test | Pending instructor credentials |
+| `provider.tf` — AWS provider, default tags | Done |
+| `variables.tf` — region, CIDRs, instance type, app port | Done |
+| `networking.tf` — VPC, subnets, IGW, routes | Done |
+| `security.tf` — ALB and EC2 security groups | Done |
+| `alb.tf` — ALB, target group, listener | Done |
+| `launch_template.tf` — Amazon Linux 2023, placeholder user_data | Done |
+| `asg.tf` — ASG with min/desired/max = 2 | Done |
+| `outputs.tf` — ALB DNS, VPC ID, subnet IDs | Done |
+| `terraform.tfvars.example` | Done |
+| `terraform/README.md` — execution guide, costs, cleanup | Done |
+
+#### Phase 2 Success Criteria
+
+- [x] All Terraform `.tf` files exist under `terraform/`
+- [x] Infrastructure covers VPC, subnets, IGW, routes, security groups, ALB, ASG, EC2 launch template
+- [x] No RDS, Route53, CloudFront, or other forbidden services in Terraform code
+- [x] Launch Template uses placeholder `user_data` only (no app deployment)
+- [x] `terraform/README.md` documents scope, prerequisites, steps, costs, and cleanup
+- [x] No `terraform apply` executed during Phase 2
+- [x] No AWS credentials required during Phase 2 development
+
+---
+
+### Phase 3 — RDS Creation and Integration
+
+**Status:** Postponed — planned a few days before the final presentation
+
+**Goal:** Create an RDS MySQL instance manually in AWS, connect the Flask application, verify read/write operations, and retire SQLite for production usage.
+
+**Reason for postponement:** Minimize AWS costs; avoid paying for RDS during development; keep the database active only when needed.
+
+#### What Phase 3 Includes
+
+1. Create an RDS MySQL instance manually in AWS (instructor-supplied or self-created per course instructions)
+2. Obtain endpoint, username, password, and database name
+3. Connect the Flask application via `DATABASE_URL` environment variable
+4. Verify greeting write and read operations against RDS
+5. Remove SQLite from production usage (local development may still use SQLite)
+
+#### What Phase 3 Does NOT Include
+
+- Terraform provisioning of RDS (RDS is created manually, not via this Terraform project)
+- `terraform apply` (that happens at final deployment, before presentation)
+
+#### Pre-existing Code (Ready for Phase 3)
+
+The application database layer already supports both SQLite and MySQL:
+
+| Component | Status |
+|-----------|--------|
+| `backend/database.py` — dual SQLite + MySQL support | Done |
+| `PyMySQL` dependency in `requirements.txt` | Done |
+| `.env.example` — `DATABASE_URL` template | Done |
+
+#### Connection String
+
+| Environment | Connection |
+|-------------|------------|
+| Local development (Phase 1) | `sqlite:///local.db` |
+| Production (Phase 3+) | `mysql://user:password@rds-endpoint:3306/database_name` |
 
 #### Switching to RDS
 
 1. Copy `.env.example` to `.env`
 2. Set `DATABASE_URL=mysql://user:password@rds-endpoint:3306/database_name`
-3. Run `./RUN.SH`
+3. Run `./RUN.SH` (local test) or deploy to EC2 with the same variable
 4. Generate a greeting — data is written to RDS
 5. Verify with: `SELECT * FROM greetings ORDER BY id DESC LIMIT 5;`
 
-#### Phase 2 Success Criteria
+#### Phase 3 Success Criteria
 
-- [ ] Application connects to RDS successfully (pending instructor credentials)
-- [x] Greeting generation works identically to Phase 1
-- [ ] Greetings are written to RDS (pending instructor credentials)
-- [ ] Greeting history reads from RDS (pending instructor credentials)
-- [x] Application logic (beyond the database layer) is unchanged
-- [x] Connection string is configured via environment variable
+- [ ] RDS MySQL instance created and accessible
+- [ ] Application connects to RDS successfully
+- [ ] Greeting generation works identically to Phase 1
+- [ ] Greetings are written to RDS
+- [ ] Greeting history reads from RDS
+- [ ] SQLite is not used in production deployment
 
 ---
 
-### Phase 3 — AWS Infrastructure Deployment
+### Final Deployment and Presentation
 
-**Status:** Not started (Phase 2 complete — ready to begin)
+**Status:** Pending — after Phases 2 and 3, at presentation week
 
-**Goal:** Deploy the application to AWS using Terraform, demonstrating high availability.
+**Goal:** Deploy infrastructure to AWS, run the application on EC2 behind the ALB/ASG, connect to RDS, and demonstrate high availability.
 
 #### Production Architecture (Final)
 
@@ -410,29 +495,16 @@ Auto Scaling Group (ASG)
 EC2 Instance #1    EC2 Instance #2
     ↓                    ↓
          RDS Database
-         (instructor-supplied)
+         (manual / instructor-supplied)
 ```
 
-#### What Terraform Must Provision
+#### Final Deployment Steps
 
-- VPC
-- Subnets (public and/or private as appropriate)
-- Security Groups
-- Launch Template
-- Auto Scaling Group (minimum 2 instances)
-- Target Group
-- Application Load Balancer (ELB)
-
-#### What Terraform Does NOT Provision
-
-- **RDS** — supplied by the instructor; referenced via configuration only
-
-#### Application Deployment Model
-
-- The application must be **stateless** — any EC2 instance can handle any request
-- Database persistence is handled entirely by RDS
-- If one EC2 instance is terminated, the ASG replaces it and the ELB routes traffic to surviving instances
-- The application on each EC2 instance connects to the same RDS endpoint
+1. Run `terraform init`, `terraform plan`, `terraform apply` (from `terraform/`)
+2. Deploy Flask application to EC2 instances (manual; not in Terraform user_data)
+3. Set `DATABASE_URL` on each EC2 instance to point to RDS
+4. Confirm ALB health checks pass and app is accessible via ALB DNS name
+5. Demonstrate HA: terminate one EC2 instance; confirm app remains available
 
 #### Availability Test Scenario (Final Exam)
 
@@ -449,7 +521,7 @@ This is the definitive pass/fail test for the project:
 
 **Pass = system survives single server failure with no data loss.**
 
-#### Phase 3 Success Criteria
+#### Final Deployment Success Criteria
 
 - [ ] `terraform apply` provisions all required AWS resources
 - [ ] Application is accessible via ELB DNS name
@@ -470,11 +542,12 @@ The project is considered fully successful when:
 | Criterion | Phase |
 |-----------|-------|
 | Local application works end-to-end | Phase 1 | Done |
-| Application works with RDS | Phase 2 | Code ready (live test pending) |
-| Terraform deploys full AWS infrastructure | Phase 3 | Pending |
-| Application runs on AWS behind ELB and ASG | Phase 3 | Pending |
-| Database read/write demonstrated live | Phase 3 | Pending |
-| System survives EC2 instance termination | Phase 3 | Pending |
+| Terraform infrastructure code prepared | Phase 2 | Done |
+| Application works with RDS | Phase 3 | Pending |
+| Terraform deploys full AWS infrastructure | Final deployment | Pending |
+| Application runs on AWS behind ELB and ASG | Final deployment | Pending |
+| Database read/write demonstrated live | Final deployment | Pending |
+| System survives EC2 instance termination | Final deployment | Pending |
 | Final presentation requirements met | All | Pending |
 
 **Ultimate goal:** Pass the course project with a fully working, highly available cloud deployment.
@@ -486,9 +559,9 @@ The project is considered fully successful when:
 When implementing this project, follow these rules:
 
 1. **Read this file first.** Do not assume requirements from prior conversations.
-2. **Respect the current phase.** Do not introduce AWS, Terraform, or RDS during Phase 1.
+2. **Respect the current phase.** Do not run `terraform apply` during Phase 2 preparation. Do not create RDS until Phase 3.
 3. **Do not add complexity.** The application is a vehicle for demonstrating infrastructure skills.
-4. **Keep the database layer isolated.** All database access must go through a dedicated module so Phase 2 migration is a single-layer change.
+4. **Keep the database layer isolated.** All database access must go through `backend/database.py` (MySQL support already implemented).
 5. **Use environment variables for configuration.** Database URLs, ports, and secrets must not be hardcoded.
 6. **Do not use forbidden technologies** listed in this document.
 7. **Do not add AWS services** beyond the mandatory list without explicit approval.
@@ -502,7 +575,7 @@ When implementing this project, follow these rules:
 
 Use this checklist when preparing for the final presentation:
 
-- [ ] Terraform code is ready and tested
+- [x] Terraform code is ready (`terraform/` directory)
 - [ ] `terraform apply` completes without errors
 - [ ] ELB URL is accessible from a browser
 - [ ] Two EC2 instances visible in ASG
